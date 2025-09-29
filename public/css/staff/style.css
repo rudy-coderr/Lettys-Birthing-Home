@@ -1,0 +1,1515 @@
+
+        :root {
+            --primary-color: #113F67;
+            --primary-dark: #0d2f4d;
+            --primary-light: #1a4d7a;
+            --primary-gradient: linear-gradient(135deg, #113F67 0%, #0d2f4d 100%);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #3b82f6;
+            --light-bg: #f8fafc;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 250px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: var(--primary-gradient);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(20px);
+            transition: var(--transition);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            width: var(--sidebar-width);
+            z-index: 1050;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+            transition: var(--transition);
+            border-radius: var(--border-radius);
+            margin: 2px 0;
+            font-weight: 500;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #fff;
+            transform: scaleY(0);
+            transition: var(--transition);
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #fff !important;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(8px);
+        }
+
+        .sidebar .nav-link.active::before {
+            transform: scaleY(1);
+        }
+
+        .dropdown-submenu {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            margin-top: 4px;
+            padding: 8px;
+            margin-left: 10px;
+        }
+
+        .dropdown-submenu .nav-link {
+            font-size: 0.9em;
+            padding: 8px 12px;
+            margin: 1px 0;
+        }
+
+        .dropdown-icon {
+            margin-left: auto;
+            color: rgba(255, 255, 255, 0.8);
+            transition: transform var(--transition), color var(--transition);
+        }
+
+        .dropdown-icon.rotate {
+            transform: rotate(180deg);
+        }
+
+        .content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left var(--transition);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: var(--sidebar-width);
+                transform: translateX(-100%);
+                z-index: 1055;
+                overflow-y: auto;
+            }
+
+            .sidebar.mobile-show {
+                  transform: translateX(0);
+                width: var(--sidebar-width);
+                z-index: 1055;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                z-index: 1040;
+                display: none;
+                backdrop-filter: blur(4px);
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+                animation: fadeIn 0.3s ease-out;
+            }
+
+            .sidebar-header {
+                position: relative;
+                padding: 15px;
+            }
+
+            .logo-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            #mobileMenuBtnSidebar {
+                position: absolute;
+                top: -10px;
+                right: 15px;
+                background: none;
+                border: none;
+                color: #fff;
+                font-size: 1.5rem;
+                padding: 8px;
+                border-radius: 8px;
+                transition: var(--transition);
+                z-index: 1060;
+                cursor: pointer;
+            }
+
+            #mobileMenuBtnSidebar:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: scale(1.1);
+            }
+              .calendar-iframe-container iframe {
+                height: 400px;
+            }
+        }
+
+         .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--card-shadow-hover);
+        }
+         .stat-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            color: white;
+            font-size: 26px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover .stat-icon::before {
+            left: 100%;
+        }
+
+        .stat-icon.patients {
+            background: linear-gradient(135deg, var(--info-color), #2563eb);
+        }
+
+        .stat-icon.appointments {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+        }
+
+        .stat-icon.due {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+        }
+
+        .stat-icon.pending {
+            background: linear-gradient(135deg, var(--danger-color), #dc2626);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .patients-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .patients-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .patients-card:hover {
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .patients-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-patient-btn {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .add-patient-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-4px);
+        }
+
+        .search-filter-section {
+            padding: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-box input {
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(17, 63, 103, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+        }
+
+        .filter-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .filter-dropdown {
+            position: relative;
+        }
+
+        .filter-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            z-index: 1000;
+            display: none;
+        }
+
+        .filter-dropdown-menu.show {
+            display: block;
+        }
+
+        .filter-option {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-option:hover {
+            background: #f0f0f0;
+        }
+
+        .filter-option.selected {
+            background: rgba(17, 63, 103, 0.1);
+            font-weight: 600;
+        }
+
+        .filter-count {
+            background: var(--danger-color);
+            color: white;
+            border-radius: 10px;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .clear-filters-btn {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1rem;
+            transition: var(--transition);
+        }
+
+        .clear-filters-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .table-container {
+            padding: 1.5rem;
+        }
+          .table-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch; 
+        }
+
+        .patients-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .patients-table th,
+        .patients-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .patients-table th {
+            background: #ffffff;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .patients-table tr:hover {
+            background: rgba(17, 63, 103, 0.05);
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin: 0 0.5rem;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            color: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .view-btn {
+            color: var(--info-color);
+        }
+         .download-btn {
+            color: var(--success-color);
+        }
+
+
+        .add-record-btn {
+            color: var(--success-color);
+        }
+        .intrapartum-btn{
+            color: var(--info-color);
+        }
+
+        .delete-btn {
+            color: var(--danger-color);
+        }
+
+         .status-pending {
+            color: var(--warning-color);
+            font-weight: 500;
+        }
+
+        .status-no-show {
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+
+        .status-cancelled {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .no-results i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .pagination-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1rem;
+            transition: var(--transition);
+        }
+
+        .pagination-btn:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .items-per-page select {
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 0.5rem;
+        }
+
+        .main-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: var(--card-shadow);
+        }
+          /* Calendar Section Styles */
+        .calendar-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            margin-top: 24px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .calendar-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+        }
+
+        .calendar-title i {
+            margin-right: 8px;
+        }
+
+        .calendar-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .calendar-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .calendar-iframe-container {
+            position: relative;
+            min-height: 600px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .calendar-iframe-container.loading::before {
+            content: 'Loading...';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: 500;
+            z-index: 10;
+        }
+
+        .calendar-iframe-container.loading iframe {
+            opacity: 0;
+        }
+
+        .calendar-iframe-container iframe {
+            width: 100%;
+            height: 600px;
+            transition: opacity 0.3s ease;
+        }
+
+        .page-title {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .notification-dropdown {
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow-hover);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            overflow: hidden;
+            min-width: 350px;
+            max-width: 90vw;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 576px) {
+
+            .notification-dropdown,
+            .profile-dropdown {
+                position: fixed !important;
+                top: 60px;
+                left: 5% !important;
+                right: 5% !important;
+                width: 90% !important;
+                max-width: 250px !important;
+                min-width: unset !important;
+                margin: 0 auto;
+                border-radius: 0 0 var(--border-radius) var(--border-radius);
+                z-index: 1050;
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+             .calendar-title {
+                font-size: 1.2rem;
+            }
+
+            .calendar-btn {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+
+            .calendar-iframe-container iframe {
+                height: 300px;
+            }
+
+        }
+
+        .notification-dropdown li {
+            list-style: none;
+        }
+
+        .notification-item {
+            transition: var(--transition);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .notification-item:hover {
+            background: #f0f0f0;
+            transform: translateX(4px);
+        }
+
+        .notification-badge {
+            background: var(--danger-color) !important;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .edit-btn {
+            color: var(--info-color);
+        }
+         .resched-btn {
+            color: var(--warning-color);
+        }
+
+        .cancel-btn {
+            color: var(--danger-color);
+        }
+
+        .message-btn {
+            color: var(--success-color);
+        }
+
+
+        .mobile-menu-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            padding: 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+            z-index: 1060;
+            cursor: pointer;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(17, 63, 103, 0.1);
+            transform: scale(1.1);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1040;
+            display: none;
+            backdrop-filter: blur(4px);
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+          @media (prefers-color-scheme: dark) {
+            :root {
+                --light-bg: #1e293b;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                 transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                  transform: translateY(0);
+            }
+        }
+        
+
+        .user-profile img {
+            border: 2px solid rgba(17, 63, 103, 0.2);
+            transition: var(--transition);
+        }
+
+        .user-profile:hover img {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .profile-dropdown {
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow-hover);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            overflow: hidden;
+        }
+
+        .profile-dropdown-item {
+            transition: var(--transition);
+            padding: 12px 20px;
+        }
+
+        .profile-dropdown-item:hover {
+            background: #ffffff;
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 576px) {
+            .search-filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .patients-table {
+                display: block;
+                overflow-x: auto;
+            }
+          
+             .visits-table {
+                display: block;
+                overflow-x: auto;
+            }
+             .form-row {
+                flex-direction: column;
+            }
+
+            .form-group {
+                min-width: 100%;
+            }
+               .appointments-table {
+                font-size: 12px;
+            }
+            
+            .appointments-table td,
+            .appointments-table th {
+                padding: 6px 8px;
+            }
+             .appointments-table tr {
+                height: auto;
+                line-height: 1.2;
+            }
+             .header-actions {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+         .appointments-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .appointments-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .appointments-card:hover {
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .appointments-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-appointment-btn {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .add-appointment-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-4px);
+        }
+
+        .appointments-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .appointments-table th,
+        .appointments-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .appointments-table th {
+            background: #ffffff;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .appointments-table tr:hover {
+            background: rgba(17, 63, 103, 0.05);
+        }
+
+         .emergency-modal .modal-content {
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .emergency-modal .modal-header {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .emergency-modal .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+        }
+
+        .emergency-modal .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+          .visits-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visits-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .visits-card:hover {
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .visits-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+          .visits-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .visits-table th,
+        .visits-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .visits-table th {
+            background: #ffffff;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .visits-table tr:hover {
+            background: rgba(17, 63, 103, 0.05);
+        }
+          .form-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .form-card:hover {
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .form-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+          /* .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        } */
+
+        .form-section {
+            padding: 1.5rem;
+        }
+
+        .form-section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-control,
+        .form-select,
+        .form-textarea {
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            transition: var(--transition);
+        }
+
+        .form-control:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(17, 63, 103, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+            width: 100%;
+        }
+
+        .required {
+            color: var(--danger-color);
+        }
+
+        .btnn {
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btnn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+        
+        .back-button {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-4px);
+        }
+
+            .edit-button {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .edit-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+           .profile-avatar {
+            position: relative;
+            display: inline-block;
+        }
+
+        .avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .avatar-upload:hover {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+          .btn-outline-secondary {
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .btn-outline-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .btn-complete {
+            background: var(--success-color);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: var(--transition);
+            margin-left: 1rem;
+        }
+
+        .btn-complete:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+            background: #0a8f66;
+        }
+         .btn-remove {
+            background: var(--danger-color);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1rem;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .btn-remove:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+          .hidden-section {
+            display: none;
+        }
+
+          .section-hidden {
+            display: none;
+        }
+
+       .section-hidden {
+           display: none;
+       }
+         .data-label {
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .data-value {
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+         .form-card,
+        .schedule-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before,
+        .schedule-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .form-card:hover,
+        .schedule-card:hover {
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .form-header,
+        .schedule-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-section,
+        .schedule-body {
+            padding: 1.5rem;
+        }
+
+       
+          .calendar-section {
+            margin-top: 1.5rem;
+        }
+
+       
+
+        .calendar-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-btn,
+        .today-btn
+       {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1rem;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .nav-btn:hover,
+        .today-btn:hover
+        {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .view-btn.active {
+            background: var(--primary-color);
+        }
+
+        .calendar-month {
+            background: #fff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .month-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e2e8f0;
+        }
+
+        .calendar-header-cell {
+            background: var(--light-bg);
+            text-align: center;
+            padding: 0.75rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .calendar-cell {
+            background: #fff;
+            padding: 0.5rem;
+            min-height: 100px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .calendar-cell:hover {
+            background: #f8fafc;
+        }
+
+        .calendar-cell.today {
+            border: 2px solid var(--primary-color);
+        }
+
+        .calendar-cell.work-day {
+            background: rgba(17, 63, 103, 0.1);
+        }
+
+        .calendar-cell.other-month {
+            background: #f0f0f0;
+            color: #6b7280;
+        }
+
+        .date-number {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .shift-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .shift-dot.day {
+            background: var(--primary-color);
+        }
+
+        .shift-dot.night {
+            background: var(--danger-color);
+        }
+
+        .shift-text {
+            font-size: 0.8rem;
+            color: #4b5563;
+        }
+
+           .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        .items-table th,
+        .items-table td {
+            padding: 0.75rem;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .items-table th {
+            background: var(--light-bg);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .add-item-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem 1rem;
+            margin-top: 1rem;
+            transition: var(--transition);
+        }
+
+        .add-item-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .remove-item-btn {
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .remove-item-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+          .medication-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medication-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+        }
+
+        .medication-card:hover {
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .medication-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-medication-btn {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            transition: var(--transition);
+        }
+
+        .add-medication-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateX(-4px);
+        }
+
+              .modal .modal-content {
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .modal .modal-header {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .modal .btn-primary {
+            background: var(--primary-gradient);
+            border: none;
+        }
+
+        .modal .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+      
+   
