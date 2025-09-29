@@ -23,9 +23,10 @@ use App\Http\Controllers\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 
 // Public Routes
-Route::get('/', [AuthController::class, 'auth'])->name('login');
+Route::get('/', [AuthController::class, 'auth']);
 Route::get('/login', [AuthController::class, 'auth'])->name('login');
 Route::post('/login', [AuthController::class, 'process'])->name('login.process');
+
 
 Route::get('/forgot-password', [ResetPasswordController::class, 'forgotPassword'])->name('password.request');
 Route::post('/forgot-password', [ResetPasswordController::class, 'sendResetLink'])->name('password.email');
