@@ -4,6 +4,50 @@
 @section('page-title', 'Prenatal Check-up')
 
 @section('content')
+<style>
+.time-slot-info {
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+.time-slot-info.loading {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #bbdefb;
+}
+.time-slot-info.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+.time-slot-info.warning {
+    background-color: #fff3e0;
+    color: #f57c00;
+    border: 1px solid #ffe0b2;
+}
+.time-slot-info.error {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fa-spinner.fa-spin {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+</style>
+
     <div class="container-fluid main-content">
         <div class="form-card" id="prenatalSection">
             <div class="form-header">
@@ -39,14 +83,29 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
+                            <label for="nextVisitBranch">Next Visit Branch</label>
+                            <select class="form-control" id="nextVisitBranch" name="branch_id">
+                                <option value="">Select Branch</option>
+                                @foreach($branches as $branch)
+                                    <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="nextVisit">Next Visit Date</label>
                             <input type="date" class="form-control" id="nextVisit" name="next_visit_date">
                             <div class="invalid-feedback">Next visit date is invalid</div>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="nextVisitTime">Next Visit Time</label>
-                            <input type="time" class="form-control" id="nextVisitTime" name="next_visit_time">
-                            <div class="invalid-feedback">Next visit time is invalid</div>
+                            <select class="form-control" id="nextVisitTime" name="next_visit_time" disabled>
+                                <option value="">Select branch and date first</option>
+                            </select>
+                            <div id="visitTimeSlotHelp" class="time-slot-info" style="display: none;">
+                                <i class="fas fa-info-circle"></i> Loading available time slots...
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -183,8 +242,6 @@
                     </div>
                 </div>
 
-
-
                 <div class="form-section form-actions">
                     <button type="submit" class="btnn btn-primary">
                         <i class="fas fa-save me-2"></i> Add Record
@@ -196,8 +253,10 @@
             </form>
         </div>
     </div>
+    
     <script>
         const vaccines = @json($vaccines);
+        const visitSlotsUrl = "{{ route('visits.availableSlots') }}";
     </script>
 
     <script src="{{ asset('script/staff/add-record.js') }}"></script>

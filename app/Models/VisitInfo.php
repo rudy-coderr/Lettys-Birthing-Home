@@ -10,6 +10,7 @@ class VisitInfo extends Model
 
     protected $fillable = [
         'prenatal_visit_id',
+        'branch_id', 
         'visit_number',
         'visit_date',
         'next_visit_date',
@@ -19,5 +20,10 @@ class VisitInfo extends Model
     public function prenatalVisit()
     {
         return $this->belongsTo(PrenatalVisit::class, 'prenatal_visit_id', 'id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
     }
 }

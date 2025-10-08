@@ -364,74 +364,165 @@ class AllAppointmentController extends Controller
         return view('staff.appointment.add-appointment', compact('client'));
     }
 
+    // Add this method to your AppointmentController
+
+    public function getAvailableSlots(Request $request)
+    {
+        $date = $request->input('date');
+        $branchId = $request->input('branch_id');
+
+        if (!$date || !$branchId) {
+            return response()->json(['slots' => []]);
+        }
+
+        // Define all possible time slots
+        $allSlots = [
+            '08:00:00', '08:30:00', '09:00:00', '09:30:00',
+            '10:00:00', '10:30:00', '11:00:00', '11:30:00',
+            '12:00:00', '12:30:00', '13:00:00', '13:30:00',
+            '14:00:00', '14:30:00', '15:00:00', '15:30:00',
+            '16:00:00'
+        ];
+
+        // Get booked appointments for the selected date and branch
+        $bookedSlots = Appointment::where('appointment_date', $date)
+            ->where('branch_id', $branchId)
+            ->whereIn('status_id', [1, 3]) // Pending and Confirmed appointments
+            ->pluck('appointment_time')
+            ->toArray();
+
+        // Filter available slots
+        $availableSlots = [];
+        foreach ($allSlots as $slot) {
+            $slotTime = \Carbon\Carbon::parse($slot);
+            $slotEndTime = $slotTime->copy()->addMinutes(30);
+            
+            $isBooked = false;
+            foreach ($bookedSlots as $bookedTime) {
+                $bookedStart = \Carbon\Carbon::parse($bookedTime);
+                $bookedEnd = $bookedStart->copy()->addMinutes(30);
+                
+                // Check if slots overlap
+                if ($slotTime < $bookedEnd && $slotEndTime > $bookedStart) {
+                    $isBooked = true;
+                    break;
+                }
+            }
+            
+            if (!$isBooked) {
+                $availableSlots[] = [
+                    'value' => $slot,
+                    'label' => \Carbon\Carbon::parse($slot)->format('g:i A')
+                ];
+            }
+        }
+
+        return response()->json(['slots' => $availableSlots]);
+    }
+
     public function storeAppointment(Request $request)
     {
-        $validated = $request->validate([
-            'first_name'       => 'required|string|max:255',
-            'last_name'        => 'required|string|max:255',
-            'client_phone'     => 'required|string|max:20',
-            'appointment_date' => 'required|date',
-            'appointment_time' => 'required',
-            'branch'           => 'required|string',
-            'reason'           => 'required|string',
-        ]);
+        try {
+            $validated = $request->validate([
+                'first_name'       => 'required|string|max:255',
+                'last_name'        => 'required|string|max:255',
+                'client_phone'     => 'required|string|max:20',
+                'appointment_date' => 'required|date',
+                'appointment_time' => 'required',
+                'branch'           => 'required|string',
+                'reason'           => 'required|string',
+            ]);
 
-        $client = Client::firstOrCreate(
-            ['client_phone' => $validated['client_phone']],
-            [
-                'first_name'   => $validated['first_name'],
-                'last_name'    => $validated['last_name'],
-                'messenger_id' => null,
+            // Find branch first
+            $branch = Branch::where('branch_name', $validated['branch'])->first();
+            
+            if (!$branch) {
+                return back()->with('swal', [
+                    'icon'  => 'error',
+                    'title' => 'Branch Not Found',
+                    'text'  => 'The selected branch does not exist.',
+                ])->withInput();
+            }
 
-            ]
-        );
+            // Check if the time slot is still available
+            $isSlotAvailable = !Appointment::where('appointment_date', $validated['appointment_date'])
+                ->where('branch_id', $branch->id)
+                ->whereIn('status_id', [1, 3])
+                ->where(function ($query) use ($validated) {
+                    $slotTime = \Carbon\Carbon::parse($validated['appointment_time']);
+                    $slotEndTime = $slotTime->copy()->addMinutes(30);
+                    
+                    $query->where(function ($q) use ($slotTime, $slotEndTime) {
+                        $q->whereRaw("TIME(appointment_time) < ?", [$slotEndTime->format('H:i:s')])
+                        ->whereRaw("ADDTIME(TIME(appointment_time), '00:30:00') > ?", [$slotTime->format('H:i:s')]);
+                    });
+                })
+                ->exists();
 
-        // Find branch
-        $branch = Branch::where('branch_name', $validated['branch'])->firstOrFail();
+            if (!$isSlotAvailable) {
+                return back()->with('swal', [
+                    'icon'  => 'error',
+                    'title' => 'Time Slot Unavailable',
+                    'text'  => 'This time slot has already been booked. Please select another time.',
+                ])->withInput();
+            }
 
-        // Create Appointment (default status → Pending (2))
-        $appointment = Appointment::create([
-            'client_id'          => $client->id,
-            'branch_id'          => $branch->id,
-            'status_id'          => 1, // Pending
-            'appointment_date'   => $validated['appointment_date'],
-            'appointment_time'   => $validated['appointment_time'],
-            'appointment_reason' => $validated['reason'],
-        ]);
+            // Create or find client
+            $client = Client::firstOrCreate(
+                ['client_phone' => $validated['client_phone']],
+                [
+                    'first_name'   => $validated['first_name'],
+                    'last_name'    => $validated['last_name'],
+                    'messenger_id' => null,
+                ]
+            );
 
-        // Load relationships for webhook
-        $appointment->load(['client', 'branch', 'appointment_status']);
+            // Create Appointment
+            $appointment = Appointment::create([
+                'client_id'          => $client->id,
+                'branch_id'          => $branch->id,
+                'status_id'          => 1, // Pending
+                'appointment_date'   => $validated['appointment_date'],
+                'appointment_time'   => $validated['appointment_time'],
+                'appointment_reason' => $validated['reason'],
+            ]);
 
-        // Send to N8N webhook
-        $webhookData = $this->prepareAppointmentWebhookData($appointment);
-        $this->sendToN8NWebhook($webhookData);
+            // Audit Logs
+            AuditLog::create([
+                'staff_id'   => Auth::user()->staff->id ?? null,
+                'action'     => 'Added Appointment',
+                'details'    => 'Scheduled appointment for '
+                    . $client->first_name . ' ' . $client->last_name
+                    . ' at ' . $branch->branch_name
+                    . ' on ' . $appointment->appointment_date . ' ' . $appointment->appointment_time,
+                'created_at' => now(),
+            ]);
 
-        // Audit Logs
-        AuditLog::create([
-            'staff_id'   => Auth::user()->staff->id ?? null,
-            'action'     => 'Added Appointment',
-            'details'    => 'Scheduled appointment for '
-            . $client->first_name . ' ' . $client->last_name
-            . ' at ' . $branch->branch_name
-            . ' on ' . $appointment->appointment_date . ' ' . $appointment->appointment_time,
-            'created_at' => now(),
-        ]);
+            // 🔔 Notify all Admins and Staff
+            $admins     = User::whereHas('admin')->get();
+            $staffs     = User::whereHas('staff')->get();
+            $recipients = $admins->merge($staffs);
 
-        // 🔔 Notify all Admins and Staff
-        $admins     = User::whereHas('admin')->get();
-        $staffs     = User::whereHas('staff')->get();
-        $recipients = $admins->merge($staffs);
+            Notification::send($recipients, new AppointmentScheduled($appointment));
 
-        Notification::send($recipients, new AppointmentScheduled($appointment));
+            // Flash Swal message
+            session()->flash('swal', [
+                'icon'  => 'success',
+                'title' => 'Appointment Added!',
+                'text'  => 'The appointment has been scheduled successfully.',
+            ]);
 
-        // Flash Swal message
-        session()->flash('swal', [
-            'icon'  => 'success',
-            'title' => 'Appointment Added!',
-            'text'  => 'The appointment has been scheduled successfully.',
-        ]);
+            return redirect()->route('pendingAppointment');
 
-        return redirect()->route('pendingAppointment');
+        } catch (\Exception $e) {
+            \Log::error('Error storing appointment: ' . $e->getMessage());
+            
+            return back()->with('swal', [
+                'icon'  => 'error',
+                'title' => 'Error',
+                'text'  => 'Failed to create appointment. Please try again.',
+            ])->withInput();
+        }
     }
 
     public function rescheduleAppointment(Request $request)

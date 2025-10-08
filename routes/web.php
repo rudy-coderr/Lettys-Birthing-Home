@@ -168,6 +168,8 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::get('/staff/pendingAppointment', [AllAppointmentController::class, 'pendingAppointment'])->name('pendingAppointment');
         Route::get('/staff/addAppointment', [AllAppointmentController::class, 'addAppointment'])->name('addAppointment');
         Route::post('/staff/addAppointment/store', [AllAppointmentController::class, 'storeAppointment'])->name('storeAppointment');
+        Route::get('/staff/appointments/available-slots', [AllAppointmentController::class, 'getAvailableSlots'])
+            ->name('appointments.availableSlots');
         Route::get('/staff/checkups/{id?}', [AllAppointmentController::class, 'checkups'])->name('checkups');
         Route::post('/staff/prenatal/store', [AllAppointmentController::class, 'storePrenatal'])->name('prenatal.store');
         Route::post('/staff/appointment/reschedule', [AllAppointmentController::class, 'rescheduleAppointment'])->name('appointment.reschedule');
@@ -206,7 +208,8 @@ Route::middleware(['auth', 'prevent-back-history'])->group(function () {
         Route::get('/staff/patientRecords', [PatientManagementController::class, 'patientRecords'])->name('patientRecords');
         Route::get('/staff/patient/{id}/addRecords', [PatientManagementController::class, 'addRecords'])->name('addRecords');
         Route::post('/staff/patient/{id}/prenatal/store', [PatientManagementController::class, 'storePrenatal'])->name('patient.prenatal.store');
-
+        Route::get('/staff/visits/available-slots', [PatientManagementController::class, 'getAvailableVisitSlots'])->name('visits.availableSlots');
+        
         Route::get('/staff/patient/{id}/records', [PatientManagementController::class, 'recordCheckup'])->name('recordCheckup');
         Route::get('/staff/patient/{id}/visit/{visitNumber}', [PatientManagementController::class, 'fetchVisit'])->name('fetchVisit');
 

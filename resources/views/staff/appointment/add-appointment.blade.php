@@ -2,7 +2,57 @@
 
 @section('title', 'Add Appointment - Letty\'s Birthing Home')
 @section('page-title', 'Appointment Management')
+
 @section('content')
+<style>
+/* Time Slot Information Styling */
+.time-slot-info {
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+.time-slot-info.loading {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #bbdefb;
+}
+.time-slot-info.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+.time-slot-info.warning {
+    background-color: #fff3e0;
+    color: #f57c00;
+    border: 1px solid #ffe0b2;
+}
+.time-slot-info.error {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fa-spinner.fa-spin {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+#appointmentTime:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+</style>
 
     <div class="container-fluid main-content">
         <div class="form-card" id="appointmentSection">
@@ -57,27 +107,31 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="appointmentDate">Appointment Date <span class="required">*</span></label>
-                            <input type="date" class="form-control" id="appointmentDate" name="appointment_date"
-                                required>
-                            <div class="invalid-feedback">Please select a valid date.</div>
+                            <label for="branch">Branch <span class="required">*</span></label>
+                            <select class="form-select" id="branch" name="branch" required>
+                                <option value="" disabled selected>Select Branch</option>
+                                <option value="Sta. Justina" data-branch-id="1">Sta. Justina</option>
+                                <option value="San Pedro" data-branch-id="2">San Pedro</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a branch.</div>
                         </div>
                         <div class="form-group">
-                            <label for="appointmentTime">Appointment Time <span class="required">*</span></label>
-                            <input type="time" class="form-control" id="appointmentTime" name="appointment_time"
-                                required>
-                            <div class="invalid-feedback">Please select a valid time.</div>
+                            <label for="appointmentDate">Appointment Date <span class="required">*</span></label>
+                            <input type="date" class="form-control" id="appointmentDate" name="appointment_date"
+                                min="{{ date('Y-m-d') }}" required>
+                            <div class="invalid-feedback">Please select a valid date.</div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="branch">Branch <span class="required">*</span></label>
-                            <select class="form-select" id="branch" name="branch" required>
-                                <option value="" disabled selected>Select Branch</option>
-                                <option value="Sta. Justina">Sta. Justina</option>
-                                <option value="San Pedro">San Pedro</option>
+                            <label for="appointmentTime">Appointment Time <span class="required">*</span></label>
+                            <select class="form-select" id="appointmentTime" name="appointment_time" required disabled>
+                                <option value="" disabled selected>Select date and branch first</option>
                             </select>
-                            <div class="invalid-feedback">Please select a branch.</div>
+                            <div class="invalid-feedback">Please select a valid time.</div>
+                            <div id="timeSlotHelp" class="time-slot-info" style="display: none;">
+                                <i class="fas fa-info-circle"></i> Loading available time slots...
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="reason">Reason <span class="required">*</span></label>
@@ -100,5 +154,8 @@
     </div>
     </main>
 
+    <script>
+        const availableSlotsUrl = "{{ route('appointments.availableSlots') }}";
+    </script>
     <script src="{{ asset('script/staff/add-appointment.js') }}"></script>
 @endsection

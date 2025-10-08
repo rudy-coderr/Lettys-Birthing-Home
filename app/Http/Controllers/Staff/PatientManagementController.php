@@ -19,6 +19,7 @@ use App\Models\Postpartum;
 use App\Models\PrenatalVisit;
 use App\Models\Remarks;
 use App\Models\VisitInfo;
+use App\Models\Branch;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -167,6 +168,55 @@ class PatientManagementController extends BaseStaffController
 
         return redirect()->back()->with('success', 'Patient information updated successfully.');
     }
+    public function getAvailableVisitSlots(Request $request)
+    {
+        $date = $request->input('date');
+        $branchId = $request->input('branch_id');
+
+        if (!$date || !$branchId) {
+            return response()->json(['slots' => []]);
+        }
+
+        $allSlots = [
+            '08:00:00', '08:30:00', '09:00:00', '09:30:00',
+            '10:00:00', '10:30:00', '11:00:00', '11:30:00',
+            '12:00:00', '12:30:00', '13:00:00', '13:30:00',
+            '14:00:00', '14:30:00', '15:00:00', '15:30:00',
+            '16:00:00'
+        ];
+
+        $bookedSlots = VisitInfo::where('next_visit_date', $date)
+            ->where('branch_id', $branchId)
+            ->whereNotNull('next_visit_time')
+            ->pluck('next_visit_time')
+            ->toArray();
+
+        $availableSlots = [];
+        foreach ($allSlots as $slot) {
+            $slotTime = \Carbon\Carbon::parse($slot);
+            $slotEndTime = $slotTime->copy()->addMinutes(30);
+            
+            $isBooked = false;
+            foreach ($bookedSlots as $bookedTime) {
+                $bookedStart = \Carbon\Carbon::parse($bookedTime);
+                $bookedEnd = $bookedStart->copy()->addMinutes(30);
+                
+                if ($slotTime < $bookedEnd && $slotEndTime > $bookedStart) {
+                    $isBooked = true;
+                    break;
+                }
+            }
+            
+            if (!$isBooked) {
+                $availableSlots[] = [
+                    'value' => $slot,
+                    'label' => \Carbon\Carbon::parse($slot)->format('g:i A')
+                ];
+            }
+        }
+
+        return response()->json(['slots' => $availableSlots]);
+    }
 
     public function addRecords($id)
     {
@@ -182,11 +232,10 @@ class PatientManagementController extends BaseStaffController
         }
 
         $maritalStatuses = MaritalStatus::all();
-
-        // ✅ Fetch vaccines from inventory (category_id = 1)
         $vaccines = InventoryItem::where('category_id', 1)->get();
+        $branches = Branch::all();
 
-        return view('staff.patient.add-record', compact('patient', 'nextVisitNumber', 'maritalStatuses', 'vaccines'));
+        return view('staff.patient.add-record', compact('patient', 'nextVisitNumber', 'maritalStatuses', 'vaccines', 'branches'));
     }
     public function storePrenatal(Request $request, $id)
     {
@@ -242,9 +291,8 @@ class PatientManagementController extends BaseStaffController
             'visit_number'    => $validated['visit_number'],
             'visit_date'      => $validated['visit_date'],
             'next_visit_date' => $validated['next_visit_date'] ?? null,
-            'next_visit_time' => $validated['next_visit_time']
-                ? $validated['next_visit_time'] . ':00'
-                : null,
+            'next_visit_time' => $validated['next_visit_time'] ? $validated['next_visit_time'] . ':00' : null,
+            'branch_id'       => $request->branch_id ?? null, // ADD THIS
         ]);
 
         // ✅ Store Maternal Vitals
